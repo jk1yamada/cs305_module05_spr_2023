@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <title> </title>
+
+        <style>
+            .gameGrid {
+                display: grid;
+                border: 5px solid black;
+                grid-template-columns: 20% 20% 20% 20% 20%;
+                grid-template-rows: 20% 20% 20% 20% 20%;
+            }
+            .whiteSquare {
+                background-color: white;
+            }
+            .blackSquare {
+                background-color: black;
+            }
+        </style>
+
+        <link>
+
+        <script>
+            // Initialize array of squares
+            var allSquares = new Array( 25 );
+
+            // Function to swap the style of a square from white to black or vice versa
+            function swapSquare( id )
+            {
+                // Create variables to hold current element and its background color
+                element = document.getElementById( id );
+                color = element.style.backgroundColor;
+
+                // Find and swap clicked square
+                if ( color === "white" )
+                {
+                    element.style.backgroundColor = "black";
+                }
+                else if ( color === "black" )
+                {
+                    element.style.backgroundColor = "white";
+                }
+            }
+
+            // Function to target a square and swap it as well as all adjacent squares
+            function clickSquare( element )
+            {
+                id = parseInt( element.id );
+                
+                // Swap the clicked square
+                swapSquare( id );
+
+                // Check for and swap adjacent squares
+                // Check if square is not in top row
+                if ( id >= 5 )
+                {
+                    // Swap square above
+                    swapSquare( id - 5 );
+                }
+                // Check if square is not in bottom row
+                if ( id <= 19 )
+                {
+                    // Swap square below
+                    swapSquare( id + 5 );
+                }
+                // Check if square is not in leftmost column
+                if ( id % 5 != 0 )
+                {
+                    // Swap square on left
+                    swapSquare( id - 1 );
+                }
+                // Check if square is not in rightmost column
+                if ( ( id + 1 ) % 5 != 0 )
+                {
+                    // Swap square on right
+                    swapSquare( id + 1 );
+                }
+
+                // Check if puzzle has been solved
+                for ( var i = 0; i < 25; i++ )
+                {
+                    if ( allSquares[i].style.backgroundColor == "black" )
+                    {
+                        return false;
+                    }
+                }
+                // Puzzle has been solved!
+                alert( "Puzzle complete!" );
+            }
+
+            // Function to create a square
+            function createSquare( id )
+            {
+                // Create a new td element in the table, set its id to its index in
+                    // allSquares, set its border to 1px solid black, and create an
+                    // event listener for when the square is clicked
+                square = document.createElement( 'td' );
+                square.id = id;
+                square.style.height = "20px";
+                square.style.width = "20px";
+                square.style.border = "2px solid black";
+                square.style.backgroundColor = "white";
+                square.setAttribute( "onclick", "clickSquare(this)" );
+
+                allSquares[id] = square;
+            }
+
+            // Function to initialize the grid with a random configuration of
+            // white and black squares
+            function buildGrid()
+            {
+                // Initialize variables to target the desired article
+                var article = document.getElementById( "lightsOutGame" );
+                var table = document.createElement( "table" );
+                table.setAttribute( "id", "table" );
+                var tablebody = document.createElement( "tbody" );
+
+                // For the puzzle height
+                for ( var i = 0; i < 5; i++ )
+                {
+                    // Create a new row
+                    var newRow = document.createElement( "tr" );
+                    // For the puzzle width
+                    for ( var j = 0; j < 5; j++ )
+                    {
+                        // Create a new square with the appropriate index
+                        createSquare( 5 * i + j );
+                        // Add the new square to the current space
+                        newRow.appendChild( allSquares[5 * i + j] );
+                    }
+                    // Add the current row to the table
+                    tablebody.appendChild( newRow );
+                }
+
+                // Add the created table into the table element
+                table.appendChild( tablebody );
+                // Add the created table element into the desired article
+                article.appendChild( table );
+
+                // Initialize the grid with random clicked squares
+                initGrid();
+            }
+
+            // Function to initialize the grid with random squares
+            function initGrid()
+            {
+                // Initialize number of swaps
+                var numSwaps = Math.floor( Math.random() * 11 ) + 1;
+
+                // Perform random number of swaps on random squares
+                for ( var r = 0; r < numSwaps; r++ )
+                {
+                    // Decide random square index 0-24
+                    var id = Math.floor( Math.random() * 25 );
+
+                    // Swap selected square
+                    swapSquare( id );
+                }
+            }
+        </script>
+    </head>
+    <body onload="buildGrid()">
+        <header>
+
+        </header>
+        <main>
+            <h1>5x5 LightsOut Game</h1>
+            <article id="lightsOutGame">
+            </article>
+        </main>
+    </body>
+</html>
